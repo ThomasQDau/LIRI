@@ -8,25 +8,42 @@ var spotify = new Spotify(keys.spotify);
 var command = process.argv[2];
 var input = '';
 for (var i = 3; i < process.argv.length; i++) {
-    input = input + ' ' + process.argv[i];
+    if (input === '') {
+        input = process.argv[3];
+    } else {
+        input = input + ' ' + process.argv[i];
+    }
 }
 
 
 function concertThis() {
-    console.log('Concert');
+    // console.log('Concert');
     var queryUrl = "https://rest.bandsintown.com/artists/" + input + "/events?app_id=codingbootcamp";
     axios.get(queryUrl).then(
         function (response) {
-            console.log(response.data);
+            // console.log(response.data);
+            if (response.data.length === 0) {
+                console.log('No events can be found for this band!')
+            } else {
+                for (var i = 0; i < response.data.length; i++) {
+                    var data = response.data[i];
+                    console.log('Venue: ' + data.venue.name);
+                    console.log('Location is at ' + data.venue.city + ' ' + data.venue.region + data.venue.country);
+                    var dateArr = data.datetime.split('T');
+                    var ddmmyyArr = dateArr[0].split('-');
+                    // console.log(ddmmyyArr);
+                    console.log('The event is taking place on ' + ddmmyyArr[1] + '-' + ddmmyyArr[2] + '-' + ddmmyyArr[0]);
+                    // console.log(dateArr);
+                }
+            }
         }, function (err) {
             console.log(err.message);
         }
     );
-
 }
 
 function spotifyThis() {
-    console.log('Spotify');
+    // console.log('Spotify');
     spotify.search({ limit: 1, type: 'track', query: input }, function (err, data) {
         if (err) {
             return console.log('Error occurred: ' + err);
@@ -43,15 +60,17 @@ function spotifyThis() {
 }
 
 function movieThis() {
-    console.log('Movie');
+    // console.log('Movie');
     var queryUrl = "http://www.omdbapi.com/?t=" + input + "&y=&plot=short&apikey=trilogy";
     axios.get(queryUrl).then(
         function (response) {
-            console.log(response);
+            console.log(response.data.Ratings);
             console.log('Title: ' + response.data.Title);
             console.log('Release Year: ' + response.data.Year);
             console.log('IMDB rating: ' + response.data.imdbRating);
-            console.log('Rotten Tomatoes rating: ' + response.data.imdbRating);
+            if (response.data.Ratings[1]) {
+                console.log('Rotten Tomatoes rating: ' + response.data.Ratings[1].Value);
+            }
             console.log('Produced in: ' + response.data.Country);
             console.log('Language: ' + response.data.Language);
             console.log('Plot: ' + response.data.Plot);
@@ -61,7 +80,7 @@ function movieThis() {
 }
 
 function doWhatItSays() {
-    console.log('JUST DO IT!');
+    // console.log('JUST DO IT!');
     fs.readFile('random.txt', 'utf8', function (err, data) {
         if (err) {
             return console.log(err);
@@ -69,7 +88,6 @@ function doWhatItSays() {
         var dataArr = data.split(',');
         command = dataArr[0];
         input = dataArr[1];
-        console.log(command, input);
         switch (command) {
             case 'concert-this':
                 concertThis();

@@ -22,4 +22,4 @@ If the input is **movie-this** then the paramter entered afterwards should be a 
 If the input is **do-what-it-says** then it will go inside the file [random](random.txt) and runs the LIRI function whether is is **concert-this** or **spotify-this-song** or **movie-this** and run the respective function with the paramter provided after the input within the same file.
 
 ## Video Example
-[Youtube of my working Application!](youtube.com)
+[Youtube of my working Application!](https://www.youtube.com/watch?v=kKoSHrTCtbE&feature=youtu.be)
